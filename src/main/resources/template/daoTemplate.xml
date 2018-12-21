@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE template>
+<generator>
+	<format>default</format>
+	<source>package ${groupId}.dao.${table.nameElements[0]};
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import ${groupId}.entity.${table.nameElements[0]}.${table.className};
+
+/**
+ * 数据访问对象
+ * 
+ * @author 
+ * 
+ */
+@Repository
+public interface ${table.className}Dao {
+	
+	/**
+	 * 插入
+	 */
+	int insert(${table.className} ${table.objectName});
+	
+	/**
+	 * 批量插入
+	 */
+	int bulkInsert(List&lt;${table.className}> ${table.objectName}s);
+
+	/**
+	 * 删除
+	 */
+	int delete(${table.dbFields[0].javaType.name} ${table.dbFields[0].property});
+	
+	/**
+	 * 根据id列表批量删除
+	 */
+	int bulkDelete(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s);
+
+	/**
+	 * 修改
+	 */
+	int update(${table.className} ${table.objectName});
+	
+	/**
+	 * 逻辑删除
+	 */
+	int tombstone(${table.dbFields[0].javaType.name} ${table.dbFields[0].property});
+	
+	/**
+	 * 批量逻辑删除
+	 */
+	int bulkTombstone(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s);
+	
+	/**
+	 * QBE查询
+	 */
+	List&lt;${table.className}> queryList(${table.className} ${table.objectName});
+	
+	/**
+	 * 根据id查询单条
+	 */
+	${table.className} find(${table.dbFields[0].javaType.name} ${table.dbFields[0].property});
+
+	/**
+	 * 根据id列表查询列表
+	 */
+	List&lt;${table.className}> queryListBy${table.dbFields[0].property?cap_first}s(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s);
+}
+	
+	</source>
+	<outFile>
+		<path>${groupId?replace('.', '/')}/dao/${table.nameElements[0]}/</path>
+		<name>
+			${table.className}Dao.java
+		</name>
+	</outFile>
+</generator>

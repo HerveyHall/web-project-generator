@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE template>
+<generator>
+	<format>default</format>
+	<source>package ${groupId}.service.impl.${table.nameElements[0]};
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import ${groupId}.entity.${table.nameElements[0]}.${table.className};
+import ${groupId}.dao.${table.nameElements[0]}.${table.className}Dao;
+import ${groupId}.service.${table.nameElements[0]}.${table.className}Service;
+
+/**
+ * 业务逻辑层实现类
+ *
+ * @author 
+ *
+ */
+
+@Service
+@Transactional
+public class ${table.className}ServiceImpl implements ${table.className}Service {
+
+	@Autowired
+	private ${table.className}Dao ${table.objectName}Dao;
+	
+	/**
+	 * 插入
+	 */
+	public boolean insert${table.className}(${table.className} ${table.objectName}){
+		return ${table.objectName}Dao.insert(${table.objectName}) > 0;
+	}
+	
+	/**
+	 * 批量插入
+	 */
+	public int bulkInsert(List&lt;${table.className}> ${table.objectName}s){
+		return ${table.objectName}Dao.bulkInsert(${table.objectName}s);
+	}
+
+	/**
+	 * 修改
+	 */
+	public int update${table.className}(${table.className} ${table.objectName}){
+		return ${table.objectName}Dao.update(${table.objectName});
+	}
+	
+	/**
+	 * 删除（逻辑删除）
+	 */
+	public int remove${table.className}(${table.dbFields[0].javaType.name} ${table.dbFields[0].property}){
+		return ${table.objectName}Dao.tombstone(${table.dbFields[0].property});
+	}
+	
+	/**
+	 * 批量删除（逻辑删除）
+	 */
+	public int bulkRemove${table.className}(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s){
+		return ${table.objectName}Dao.bulkTombstone(${table.dbFields[0].property}s);
+	}
+	
+	/**
+	 * 单条查询
+	 */
+	public ${table.className} find${table.className}(${table.dbFields[0].javaType.name} ${table.dbFields[0].property}){
+		return ${table.objectName}Dao.find(${table.dbFields[0].property});
+	}
+
+	/**
+	 * 条件查询
+	 */
+	public List&lt;${table.className}> query${table.className}List(${table.className} ${table.objectName}){
+		return ${table.objectName}Dao.queryList(${table.objectName});
+	}
+	
+	/**
+	 * 批量查询
+	 */
+	public List&lt;${table.className}> query${table.className}ListBy${table.dbFields[0].property?cap_first}List(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s){
+		return ${table.objectName}Dao.queryListBy${table.dbFields[0].property?cap_first}s(${table.dbFields[0].property}s);
+	}
+}
+	
+	</source>
+	<outFile>
+		<path>${groupId?replace('.', '/')}/service/impl/${table.nameElements[0]}/</path>
+		<name>
+			${table.className}ServiceImpl.java
+		</name>
+	</outFile>
+</generator>

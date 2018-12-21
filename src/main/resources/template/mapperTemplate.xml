@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE template>
+<generator>
+	<format>default</format>
+	<source>&lt;?xml version="1.0" encoding="UTF-8"?>
+&lt;!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+&lt;mapper namespace="${groupId}.dao.${table.nameElements[0]}.${table.className}Dao">
+	&lt;resultMap id="${table.className}Result" type="${groupId}.entity.${table.nameElements[0]}.${table.className}">
+	&lt;#list table.dbFields as field>
+	&lt;#if (field.column != 'is_active')>
+		&lt;result column="${table.name}_${field.column}" property="${field.property}"/>
+	&lt;/#if> 
+	&lt;/#list>
+	&lt;/resultMap>
+	&lt;sql id="${table.className}Column">
+	&lt;#assign x = false>
+	&lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)>,&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>${table.name}.${field.column} AS ${table.name}_${field.column}&lt;/#if>&lt;/#list>
+	&lt;/sql>
+	&lt;sql id="${table.className}Where">
+		1=1
+		&lt;#list table.dbFields as field>
+		&lt;#if (field.column != 'is_active')>
+		&lt;if test="${field.property} != null and ${field.property}.toString()!=''">
+		&lt;![CDATA[ and ${table.name}.${field.column} = ${'#'}{${field.property}} &#93;&#93;>
+		&lt;/if>
+		&lt;/#if>
+		&lt;/#list>
+	&lt;/sql>
+	
+	&lt;!-- 插入 -->
+	&lt;insert id="insert" parameterType="${groupId}.entity.${table.nameElements[0]}.${table.className}"&lt;#if (table.dbFields[0].javaType.name != 'java.lang.String')> useGeneratedKeys="true" keyProperty="${table.dbFields[0].property}"&lt;/#if>>
+	&lt;#if (table.dbFields[0].javaType.name == 'java.lang.String')>
+		&lt;selectKey keyProperty="${table.dbFields[0].property}" order="BEFORE" resultType="string">
+			select UUID()
+		&lt;/selectKey>
+	&lt;/#if>
+		insert into ${table.name}(${table.name}.${table.dbFields[0].column}
+		&lt;#list table.dbFields as field>
+		&lt;#if (field_index==0 || field.column == 'is_active')>
+		&lt;#continue>
+		&lt;/#if>
+		&lt;if test="${field.property} != null">
+		, ${table.name}.${field.column}
+		&lt;/if>
+		&lt;/#list>
+		)values(&lt;#if (table.dbFields[0].javaType.name == 'java.lang.String')>${'#'}{${table.dbFields[0].property}}&lt;#else>NULL&lt;/#if>
+		&lt;#list table.dbFields as field>
+		&lt;#if (field_index==0 || field.column == 'is_active')>
+		&lt;#continue>
+		&lt;/#if>
+		&lt;if test="${field.property} != null">
+		, ${'#'}{${field.property}}
+		&lt;/if>
+		&lt;/#list>
+		)
+	&lt;/insert>
+	
+	&lt;!-- 批量插入 -->
+	&lt;insert id="bulkInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="${table.dbFields[0].property}">
+		insert into ${table.name} (
+		&lt;#assign x = false>
+		&lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)>,&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>${table.name}.${field.column}&lt;/#if>&lt;/#list>
+		) values 
+		&lt;foreach collection="list" item="item" index="index" separator=",">
+		&lt;#assign x = false>
+		(&lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)>&lt;choose>&lt;when test="item.${field.property} == null">,DEFAULT&lt;/when>&lt;otherwise>,&lt;/#if>&lt;#if (field_index==0 &amp;&amp; field.javaType.name == 'java.lang.String')>UUID()&lt;#elseif (field_index==0 &amp;&amp; field.javaType.name == 'java.lang.Integer')>NULL&lt;#else>${'#'}{item.${field.property}}&lt;/#if>&lt;/#if>&lt;#if (field.column != 'is_active' &amp;&amp; x == true)>&lt;/otherwise>&lt;/choose>
+		&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>&lt;/#list>)
+		&lt;/foreach>
+	&lt;/insert>
+	
+	&lt;!-- 删除 -->
+	&lt;delete id="delete" parameterType="${table.dbFields[0].javaType.name}">
+		delete from ${table.name} where ${table.name}.${table.dbFields[0].column} = ${'#'}{${table.dbFields[0].property}}
+	&lt;/delete>
+	
+	&lt;!-- 根据id列表批量删除 -->
+	&lt;delete id="bulkDelete" parameterType="java.util.List">
+		delete from ${table.name} where ${table.name}.${table.dbFields[0].column} in
+		(
+		&lt;foreach item="item" index="index" collection="list">
+			${'#'}{item},
+		&lt;/foreach>
+		NULL)
+	&lt;/delete>
+	
+	&lt;!-- 修改 -->
+	&lt;update id="update" parameterType="${groupId}.entity.${table.nameElements[0]}.${table.className}">
+		update ${table.name}
+		&lt;set>
+			&lt;#list table.dbFields as field>
+			&lt;#if (field_index==0 || field.column == 'is_active')>
+			&lt;#continue>
+			&lt;/#if>
+			&lt;if test="${field.property} != null">
+				${table.name}.${field.column} = ${'#'}{${field.property}}&lt;#if (field_has_next)>,
+				&lt;/#if>
+			&lt;/if>
+			&lt;/#list>
+		&lt;/set>
+		where ${table.name}.${table.dbFields[0].column} = ${'#'}{${table.dbFields[0].property}}
+	&lt;/update>
+	
+	&lt;!-- 根据id修改单条数据的is_active字段为false(逻辑删除) -->
+	&lt;update id="tombstone" parameterType="${table.dbFields[0].javaType.name}">
+		update ${table.name}
+		&lt;set>
+			${table.name}.is_active = FALSE
+		&lt;/set>
+		where ${table.name}.${table.dbFields[0].column} = ${'#'}{value}
+	&lt;/update>
+	
+	&lt;!-- 批量修改is_active字段为false(批量逻辑删除) -->
+	&lt;update id="bulkTombstone" parameterType="java.util.List">
+		update ${table.name}
+		&lt;set>
+			${table.name}.is_active = FALSE
+		&lt;/set>
+		where ${table.name}.${table.dbFields[0].column} in
+		(
+		&lt;foreach item="item" index="index" collection="list">
+			${'#'}{item},
+		&lt;/foreach>
+		NULL)
+	&lt;/update>
+	
+	&lt;!-- QBE查询 -->
+	&lt;select id="queryList" parameterType="${groupId}.entity.${table.nameElements[0]}.${table.className}"  resultMap="${table.className}Result">
+		select
+		&lt;include refid="${table.className}Column" />
+		from ${table.name}
+		&lt;where>
+		&lt;include refid="${table.className}Where" />
+		and ${table.name}.is_active = TRUE
+		&lt;/where>&lt;#list table.dbFields as field>&lt;#if (field.column == "create_time")>
+		order by ${table.name}.create_time DESC&lt;#break>&lt;/#if>&lt;/#list>
+	&lt;/select>
+	
+	&lt;!-- 根据id查询单条 -->
+	&lt;select id="find" parameterType="${table.dbFields[0].javaType.name}" resultMap="${table.className}Result">
+		select
+		&lt;include refid="${table.className}Column" />
+		from ${table.name} where ${table.name}.${table.dbFields[0].column} = ${'#'}{value} and ${table.name}.is_active = TRUE
+	&lt;/select>
+	
+	&lt;!-- 根据id列表查询列表 -->
+	&lt;select id="queryListBy${table.dbFields[0].property?cap_first}s" resultMap="${table.className}Result">
+		select
+		&lt;include refid="${table.className}Column" />
+		from ${table.name} where ${table.name}.${table.dbFields[0].column} in
+		(
+		&lt;foreach item="item" index="index" collection="list">
+			${'#'}{item},
+		&lt;/foreach>
+		NULL)
+		and ${table.name}.is_active = TRUE&lt;#if (table.dbFields[0].javaType.name == 'java.lang.Integer')>
+		order by ${table.name}.${table.dbFields[0].column} ASC&lt;#else>&lt;#list table.dbFields as field>&lt;#if (field.column == "create_time")>
+		order by ${table.name}.create_time ASC&lt;#break>&lt;/#if>&lt;/#list>&lt;/#if>
+	&lt;/select>
+&lt;/mapper>
+	</source>
+	<outFile>
+		<path>${groupId?replace('.', '/')}/mapper/${table.nameElements[0]}/</path>
+		<name>
+			${table.className}Mapper.xml
+		</name>
+	</outFile>
+</generator>

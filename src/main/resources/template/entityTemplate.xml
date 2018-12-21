@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE template>
+<generator>
+	<format>default</format>
+	<source>package ${groupId}.entity.${table.nameElements[0]};
+
+import java.io.Serializable;
+
+/**
+ * 实体类
+ * 
+ * @author
+ */
+public class ${table.className} implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	&lt;#list table.dbFields as field>
+	&lt;#if (field.column != 'is_active')>
+	
+	/**
+	 * ${field.comment}
+	 */
+    private ${field.javaType.name} ${field.property};
+    &lt;/#if>
+	&lt;/#list>
+	&lt;#list table.dbFields as field>
+	&lt;#if (field.column != 'is_active')>
+	
+	/**
+	 * 获取${field.comment}
+	 */
+	public ${field.javaType.name} get${field.property?cap_first}() {
+		return ${field.property};
+	}
+
+	/**
+	 * 设置${field.comment}
+	 */
+	public void set${field.property?cap_first}(${field.javaType.name} ${field.property}) {
+		this.${field.property} = ${field.property};
+	}
+	&lt;/#if>
+	&lt;/#list>
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null) {
+            return false;
+        }
+        if (getClass() != that.getClass()) {
+            return false;
+        }
+        ${table.className} other = (${table.className}) that;
+        &lt;#assign x = false>
+        return &lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)> &amp;&amp; &lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>(this.get${field.property?cap_first}() == null ? other.get${field.property?cap_first}() == null : this.get${field.property?cap_first}().equals(other.get${field.property?cap_first}()))
+        &lt;/#if>
+        &lt;/#list>;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        &lt;#list table.dbFields as field>
+        &lt;#if (field.column != 'is_active')>
+        result = prime * result + ((get${field.property?cap_first}() == null) ? 0 : get${field.property?cap_first}().hashCode());
+        &lt;/#if>
+        &lt;/#list>
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        &lt;#list table.dbFields as field>
+        &lt;#if (field.column != 'is_active')>
+        sb.append(", ${field.property}=").append(${field.property});
+        &lt;/#if>
+        &lt;/#list>
+        sb.append("]");
+        return sb.toString();
+    }
+}
+	</source>
+	<outFile>
+		<path>${groupId?replace('.', '/')}/entity/${table.nameElements[0]}/</path>
+		<name>
+			${table.className}.java
+		</name>
+	</outFile>
+</generator>
