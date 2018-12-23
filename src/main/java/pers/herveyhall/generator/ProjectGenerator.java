@@ -25,10 +25,10 @@ public class ProjectGenerator {
 	public static void main(String[] args) {
 		ConfigInfo configInfo = ConfigInfo.getConfig();
 		configInfo.driverClass = "com.mysql.jdbc.Driver";
-		configInfo.url = "jdbc:mysql://127.0.0.1:3306/db_product_repertory";
+		configInfo.url = "jdbc:mysql://127.0.0.1:3306/test";
 		configInfo.username = "root";
 		configInfo.password = "root";
-		configInfo.packageName = "com.lvcheng.mall";
+		configInfo.packageName = "demo.herveyhall";
 		configInfo.targetFileUrl = "D:/src/main/java/";
 		configInfo.templatePath = "template";
 		configInfo.dolayoutLog = true;
@@ -62,9 +62,6 @@ public class ProjectGenerator {
 			}
 			List<DBTable> dbtables = new ArrayList<>();
 			for (String table : tables) {
-				// if (!table.matches("^customer[\\S]*")) {
-				// continue;
-				// }
 				DBTable dbTable = new DBTable();
 				dbTable.setName(table);
 				dbTable.setObjectName(
@@ -73,9 +70,6 @@ public class ProjectGenerator {
 						+ dbTable.getObjectName().substring(1, dbTable.getObjectName().length()));
 				dbTable.setNameElements(getWords(trimFix(table, configInfo.tablePrefix, configInfo.tableSuffix)));
 				ResultSet resultSet2 = statement.executeQuery("show full columns from " + table);
-				// System.out.println("=================================");
-				// System.out.println(table);
-				// System.out.println();
 				JexlContext jexlContext = new MapContext();
 				jexlContext.set("configInfo", configInfo);
 				jexlContext.set("table", dbTable);
@@ -87,7 +81,7 @@ public class ProjectGenerator {
 							? resultSet2.getString("Type").substring(resultSet2.getString("Type").indexOf('(') + 1,
 									resultSet2.getString("Type").length() - 1)
 							: "");
-					dbField.setType(resultSet2.getString("Type").replaceAll("\\([0-9]+(,[0-9]+)?\\)", ""));// 澶勭悊decimal鍜宨nt绛夌被鍨�
+					dbField.setType(resultSet2.getString("Type").replaceAll("\\([0-9]+(,[0-9]+)?\\)", ""));
 					dbField.setJavaType(JavaTypeConvertor.convert(dbField.getType()));
 					dbField.setProperty(dbObjectNameToSimpleObjectName(trimFix(dbField.getColumn(),
 							null == configInfo.fieldPrefixExpression ? null
@@ -97,10 +91,6 @@ public class ProjectGenerator {
 									: new JexlBuilder().create().createExpression(configInfo.fieldSuffixExpression)
 											.evaluate(jexlContext).toString())));
 					dbTable.getDbFields().add(dbField);
-					// System.out.println(resultSet2.getString("Field") + " // " +
-					// resultSet2.getString("Comment"));
-					// System.out.println(dbField.getType());
-					// System.out.println(dbField.getLength());
 				}
 				dbtables.add(dbTable);
 			}

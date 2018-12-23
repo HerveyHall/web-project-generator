@@ -45,16 +45,6 @@ public interface ${table.className}Dao {
 	int update(${table.className} ${table.objectName});
 	
 	/**
-	 * 逻辑删除
-	 */
-	int tombstone(${table.dbFields[0].javaType.name} ${table.dbFields[0].property});
-	
-	/**
-	 * 批量逻辑删除
-	 */
-	int bulkTombstone(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s);
-	
-	/**
 	 * QBE查询
 	 */
 	List&lt;${table.className}> queryList(${table.className} ${table.objectName});
@@ -68,6 +58,11 @@ public interface ${table.className}Dao {
 	 * 根据id列表查询列表
 	 */
 	List&lt;${table.className}> queryListBy${table.dbFields[0].property?cap_first}s(List&lt;${table.dbFields[0].javaType.name}> ${table.dbFields[0].property}s);
+	
+	/**
+	 * 根据id列表查询列表
+	 */
+	List&lt;${table.className}> fluzzSearch(String keyword);
 }
 	
 	</source>
