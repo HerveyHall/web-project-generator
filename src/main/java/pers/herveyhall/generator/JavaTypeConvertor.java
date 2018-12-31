@@ -17,6 +17,7 @@ public class JavaTypeConvertor {
 		typeMap.put("longtext", "java.lang.String");
 		typeMap.put("text", "java.lang.String");
 		typeMap.put("char", "java.lang.String");
+		typeMap.put("tinyint", "java.lang.Boolean");
 	}
 
 	public static Class<?> convert(String dbType) {

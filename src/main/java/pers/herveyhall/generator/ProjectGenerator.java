@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pers.herveyhall.generator.JavaTypeConvertor;
+import pers.herveyhall.generator.DBField;
+import pers.herveyhall.generator.DBTable;
 
 public class ProjectGenerator {
 
@@ -32,15 +34,18 @@ public class ProjectGenerator {
 		configInfo.targetFileUrl = "D:/src/main/java/";
 		configInfo.templatePath = "template";
 		configInfo.dolayoutLog = true;
-		 configInfo.tablePrefix = "tb_";
-		generate(configInfo);
+		// configInfo.tablePrefix = "tb_";
+		generate(getSchemas(configInfo), configInfo);
 	}
 
-	public static void generate(ConfigInfo configInfo) {
+	public static List<DBTable> getSchemas(ConfigInfo configInfo) {
 		try {
 			Class.forName(configInfo.driverClass);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			if (configInfo.dolayoutLog) {
+				logger.error("无法加载数据库驱动类" + configInfo.driverClass);
+			}
+			throw new IllegalArgumentException("无法加载数据库驱动类" + configInfo.driverClass, e);
 		}
 		Connection connection = null;
 		try {
@@ -54,15 +59,17 @@ public class ProjectGenerator {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 		List<String> tables = new ArrayList<>();
+		List<DBTable> dbtables = new ArrayList<>();
+		DBTable dbTable = null;
 		try {
 			ResultSet resultSet = statement.executeQuery("show tables");
 			while (resultSet.next()) {
 				tables.add(resultSet.getString(1));
 			}
-			List<DBTable> dbtables = new ArrayList<>();
 			for (String table : tables) {
-				DBTable dbTable = new DBTable();
+				dbTable = new DBTable();
 				dbTable.setName(table);
 				dbTable.setObjectName(
 						dbObjectNameToSimpleObjectName(trimFix(table, configInfo.tablePrefix, configInfo.tableSuffix)));
@@ -73,15 +80,16 @@ public class ProjectGenerator {
 				JexlContext jexlContext = new MapContext();
 				jexlContext.set("configInfo", configInfo);
 				jexlContext.set("table", dbTable);
+				DBField dbField = null;
 				while (resultSet2.next()) {
-					DBField dbField = new DBField();
+					dbField = new DBField();
 					dbField.setColumn(resultSet2.getString("Field"));
 					dbField.setComment(resultSet2.getString("Comment"));
 					dbField.setLength(resultSet2.getString("Type").matches("^\\S+\\([0-9]+(,[0-9]+)?\\)$")
 							? resultSet2.getString("Type").substring(resultSet2.getString("Type").indexOf('(') + 1,
 									resultSet2.getString("Type").length() - 1)
 							: "");
-					dbField.setType(resultSet2.getString("Type").replaceAll("\\([0-9]+(,[0-9]+)?\\)", ""));
+					dbField.setType(resultSet2.getString("Type").replaceAll("\\([0-9]+(,[0-9]+)?\\)", ""));// 处理decimal和int等类型
 					dbField.setJavaType(JavaTypeConvertor.convert(dbField.getType()));
 					dbField.setProperty(dbObjectNameToSimpleObjectName(trimFix(dbField.getColumn(),
 							null == configInfo.fieldPrefixExpression ? null
@@ -91,13 +99,23 @@ public class ProjectGenerator {
 									: new JexlBuilder().create().createExpression(configInfo.fieldSuffixExpression)
 											.evaluate(jexlContext).toString())));
 					dbTable.getDbFields().add(dbField);
+					dbField = null;
 				}
 				dbtables.add(dbTable);
+				dbTable = null;
 			}
-			Generator.generate(dbtables, configInfo.packageName, configInfo.targetFileUrl);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if (configInfo.dolayoutLog) {
+				logger.error("发现不支持的查询操作", e);
+			}
+			throw new UnsupportedOperationException("发现不支持的查询操作", e);
 		}
+		return dbtables;
+	}
+
+	public static void generate(List<DBTable> dbtables, ConfigInfo configInfo) {
+		// DatabaseDocGenerator.generate(dbtables, "dbdoc.xlsx", "D:\\数据库文档1.xlsx");
+		Generator.generate(dbtables, configInfo.packageName, configInfo.targetFileUrl);
 		if (configInfo.dolayoutLog) {
 			logger.info("SUCCESS");
 		}
