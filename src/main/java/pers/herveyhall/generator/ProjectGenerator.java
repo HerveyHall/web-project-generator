@@ -24,6 +24,11 @@ public class ProjectGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ProjectGenerator.class);
 
+	/**
+	 * 生成器启动类
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		ConfigInfo configInfo = ConfigInfo.getConfig();
 		configInfo.driverClass = "com.mysql.jdbc.Driver";
@@ -38,6 +43,9 @@ public class ProjectGenerator {
 		generate(getSchemas(configInfo), configInfo);
 	}
 
+	/**
+	 * 获取表结构对象列表
+	 */
 	public static List<DBTable> getSchemas(ConfigInfo configInfo) {
 		try {
 			Class.forName(configInfo.driverClass);
@@ -113,6 +121,12 @@ public class ProjectGenerator {
 		return dbtables;
 	}
 
+	/**
+	 * 执行生成操作
+	 * 
+	 * @param dbtables 表结构对象列表
+	 * @param configInfo 生成器配置
+	 */
 	public static void generate(List<DBTable> dbtables, ConfigInfo configInfo) {
 		// DatabaseDocGenerator.generate(dbtables, "dbdoc.xlsx", "D:\\数据库文档1.xlsx");
 		Generator.generate(dbtables, configInfo.packageName, configInfo.targetFileUrl);

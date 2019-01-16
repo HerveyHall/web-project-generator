@@ -8,6 +8,11 @@ public class DBField extends DBObject {
 	private String length;
 	private String comment;
 
+	/**
+	 * 获取列名
+	 * 
+	 * @return 列名
+	 */
 	public String getColumn() {
 		return column;
 	}
@@ -16,6 +21,11 @@ public class DBField extends DBObject {
 		this.column = column;
 	}
 
+	/**
+	 * 获取列对应的属性名
+	 * 
+	 * @return 列对应的属性名
+	 */
 	public String getProperty() {
 		return property;
 	}
@@ -24,6 +34,10 @@ public class DBField extends DBObject {
 		this.property = property;
 	}
 
+	/**
+	 * 获取列在数据库中的类型
+	 * @return 列在数据库中的类型
+	 */
 	public String getType() {
 		return type;
 	}
@@ -32,6 +46,11 @@ public class DBField extends DBObject {
 		this.type = type;
 	}
 
+	/**
+	 * 获取列对应属性的类型
+	 * 
+	 * @return 列对应属性的类型
+	 */
 	public Class<?> getJavaType() {
 		return javaType;
 	}
@@ -40,6 +59,11 @@ public class DBField extends DBObject {
 		this.javaType = javaType;
 	}
 
+	/**
+	 * 获取列在数据库中定义的长度
+	 * 
+	 * @return 列在数据库中定义的长度
+	 */
 	public String getLength() {
 		return length;
 	}
@@ -48,6 +72,11 @@ public class DBField extends DBObject {
 		this.length = length;
 	}
 
+	/**
+	 * 获取列的注释
+	 * 
+	 * @return 列的注释
+	 */
 	public String getComment() {
 		return comment;
 	}

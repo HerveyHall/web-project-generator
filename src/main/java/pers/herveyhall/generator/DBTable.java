@@ -5,7 +5,6 @@ import java.util.List;
 
 public class DBTable extends DBObject {
 
-	// private static DBTable table;
 	private String name;
 	private String className;
 	private String objectName;
@@ -13,6 +12,11 @@ public class DBTable extends DBObject {
 	private String comment;
 	private List<DBField> dbFields = new ArrayList<>();
 
+	/**
+	 * 获取表名
+	 * 
+	 * @return 表名
+	 */
 	public String getName() {
 		return name;
 	}
@@ -21,6 +25,11 @@ public class DBTable extends DBObject {
 		this.name = name;
 	}
 
+	/**
+	 * 获取表对应的POJO类名
+	 * 
+	 * @return 表对应的POJO类名
+	 */
 	public String getClassName() {
 		return className;
 	}
@@ -29,6 +38,11 @@ public class DBTable extends DBObject {
 		this.className = className;
 	}
 
+	/**
+	 * 获取表对应的POJO对象名
+	 * 
+	 * @return 表对应的POJO对象名
+	 */
 	public String getObjectName() {
 		return objectName;
 	}
@@ -37,6 +51,11 @@ public class DBTable extends DBObject {
 		this.objectName = objectName;
 	}
 
+	/**
+	 * 获取表名中单词列表
+	 * 
+	 * @return 表名中单词列表
+	 */
 	public List<String> getNameElements() {
 		return nameElements;
 	}
@@ -45,6 +64,11 @@ public class DBTable extends DBObject {
 		this.nameElements = nameElements;
 	}
 
+	/**
+	 * 获取表注释
+	 * 
+	 * @return 表注释
+	 */
 	public String getComment() {
 		return comment;
 	}
@@ -53,6 +77,11 @@ public class DBTable extends DBObject {
 		this.comment = comment;
 	}
 
+	/**
+	 * 获取表中的column对象列表
+	 * 
+	 * @return 表中的column对象列表
+	 */
 	public List<DBField> getDbFields() {
 		return dbFields;
 	}
@@ -60,13 +89,4 @@ public class DBTable extends DBObject {
 	public void setDbFields(List<DBField> dbFields) {
 		this.dbFields = dbFields;
 	}
-
-	// public static DBTable getNewTable() {
-	// if (null == table) {
-	// synchronized (table.getClass()) {
-	// table = new DBTable();
-	// }
-	// }
-	// return table;
-	// }
 }
