@@ -1,7 +1,12 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.db.model;
 
 import java.lang.reflect.Field;
 
+/**
+ * 数据库的结构
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class DBObject {
 	@Override
 	public String toString() {

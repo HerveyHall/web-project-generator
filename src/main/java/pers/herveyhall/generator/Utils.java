@@ -3,6 +3,11 @@ package pers.herveyhall.generator;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 常用工具类
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class Utils {
 	public static String trimFix(String string, String prefix, String suffix) {
 		if (null != prefix) {

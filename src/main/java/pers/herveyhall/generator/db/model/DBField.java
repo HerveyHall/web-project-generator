@@ -1,5 +1,10 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.db.model;
 
+/**
+ * 数据库表中的列
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class DBField extends DBObject {
 	private String column;
 	private String property;

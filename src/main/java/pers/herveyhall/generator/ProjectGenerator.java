@@ -1,7 +1,5 @@
 package pers.herveyhall.generator;
 
-import static pers.herveyhall.generator.Utils.*;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,10 +14,17 @@ import org.apache.commons.jexl3.MapContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pers.herveyhall.generator.JavaTypeConvertor;
-import pers.herveyhall.generator.DBField;
-import pers.herveyhall.generator.DBTable;
+import pers.herveyhall.generator.db.model.DBField;
+import pers.herveyhall.generator.db.model.DBTable;
+import pers.herveyhall.generator.tools.JavaTypeConvertor;
 
+import static pers.herveyhall.generator.Utils.*;
+
+/**
+ * 项目生成器主类
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class ProjectGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ProjectGenerator.class);

@@ -3,6 +3,13 @@ package pers.herveyhall.generator;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
+import pers.herveyhall.generator.tools.DomUtils;
+
+/**
+ * 生成器默认模板格式
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class GeneratorTemplate extends XmlTemplate {
 	private String format;
 	private String source;

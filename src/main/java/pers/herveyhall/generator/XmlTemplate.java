@@ -1,5 +1,10 @@
 package pers.herveyhall.generator;
 
+/**
+ * XML类型的模板
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class XmlTemplate {
 	private String templateName;
 	

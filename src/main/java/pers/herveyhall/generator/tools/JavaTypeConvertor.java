@@ -1,7 +1,12 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.tools;
 
 import java.util.HashMap;
 
+/**
+ * 数据类型转换器
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class JavaTypeConvertor {
 
 	private static final String DEFAULT_TYPE = "java.lang.String";

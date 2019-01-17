@@ -1,5 +1,10 @@
 package pers.herveyhall.generator;
 
+/**
+ * 生成器配置信息
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class ConfigInfo {
 
 	/**

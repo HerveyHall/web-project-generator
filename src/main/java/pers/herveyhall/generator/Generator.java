@@ -15,7 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import pers.herveyhall.generator.db.model.DBTable;
 
+/**
+ * 生成器逻辑
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class Generator {
 
 	private static String templatePath = ConfigInfo.getConfig().templatePath;

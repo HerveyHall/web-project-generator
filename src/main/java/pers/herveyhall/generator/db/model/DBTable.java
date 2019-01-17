@@ -1,8 +1,13 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.db.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 数据库表
+ * 
+ * @author <a href="mailto://herveyhall@foxmail.com">Hervey Hall</a>
+ */
 public class DBTable extends DBObject {
 
 	private String name;
