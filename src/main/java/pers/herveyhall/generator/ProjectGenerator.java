@@ -1,5 +1,10 @@
 package pers.herveyhall.generator;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -7,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlContext;
@@ -35,16 +41,31 @@ public class ProjectGenerator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Properties properties = new Properties();
+		try {
+			properties.load(ProjectGenerator.class.getClassLoader().getResourceAsStream("config.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		ConfigInfo configInfo = ConfigInfo.getConfig();
-		configInfo.driverClass = "com.mysql.jdbc.Driver";
-		configInfo.url = "jdbc:mysql://127.0.0.1:3306/test";
-		configInfo.username = "root";
-		configInfo.password = "root";
-		configInfo.packageName = "demo.herveyhall";
-		configInfo.targetFileUrl = "D:/src/main/java/";
-		configInfo.templatePath = "template";
-		configInfo.dolayoutLog = true;
-		// configInfo.tablePrefix = "tb_";
+		for (Field field : ConfigInfo.class.getDeclaredFields()) {
+			if (Modifier.isStatic(field.getModifiers())) {
+				continue;
+			}
+			String propertyName = "configInfo." + field.getName();
+			String value = properties.getProperty(propertyName);
+			if (null == value) {
+				if (null != field.getAnnotation(NotNull.class)) {
+					throw new IllegalArgumentException(propertyName + "属性不接受空值");
+				}
+				continue;
+			}
+			try {
+				field.set(configInfo, value);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
 		generate(getSchemas(configInfo), configInfo);
 	}
 
@@ -129,7 +150,7 @@ public class ProjectGenerator {
 	/**
 	 * 执行生成操作
 	 * 
-	 * @param dbtables 表结构对象列表
+	 * @param dbtables   表结构对象列表
 	 * @param configInfo 生成器配置
 	 */
 	public static void generate(List<DBTable> dbtables, ConfigInfo configInfo) {
