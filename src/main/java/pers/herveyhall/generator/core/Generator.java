@@ -1,4 +1,4 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import pers.herveyhall.generator.db.model.DBTable;
+import pers.herveyhall.generator.supports.TemplateFactory;
+import pers.herveyhall.generator.templates.GeneratorTemplate;
 
 /**
  * 生成器逻辑

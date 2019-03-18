@@ -1,4 +1,4 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.templates;
 
 import org.dom4j.Document;
 import org.dom4j.Element;

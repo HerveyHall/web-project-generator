@@ -1,4 +1,4 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.tools;
 
 import java.util.ArrayList;
 import java.util.List;

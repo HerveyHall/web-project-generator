@@ -1,4 +1,4 @@
-package pers.herveyhall.generator.tools;
+package pers.herveyhall.generator.supports;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.supports;
 
 import org.dom4j.Document;
 
-import pers.herveyhall.generator.tools.DomHelper;
+import pers.herveyhall.generator.templates.GeneratorTemplate;
 
 /**
  * 模板工厂

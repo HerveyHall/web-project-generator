@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.tools;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,6 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.core;
+
+import pers.herveyhall.generator.tools.NotNull;
 
 /**
  * 生成器配置信息

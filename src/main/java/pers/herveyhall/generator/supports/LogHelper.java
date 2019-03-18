@@ -1,4 +1,4 @@
-package pers.herveyhall.generator.tools;
+package pers.herveyhall.generator.supports;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

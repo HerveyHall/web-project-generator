@@ -1,4 +1,4 @@
-package pers.herveyhall.generator;
+package pers.herveyhall.generator.templates;
 
 /**
  * XML类型的模板
