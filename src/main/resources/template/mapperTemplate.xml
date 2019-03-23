@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <!DOCTYPE template>
 <generator>
 	<format>default</format>
@@ -7,19 +26,23 @@
 &lt;mapper namespace="${groupId}.dao.${table.nameElements[0]}.${table.className}Dao">
 	&lt;resultMap id="${table.className}Result" type="${groupId}.entity.${table.nameElements[0]}.${table.className}">
 	&lt;#list table.dbFields as field>
-	&lt;result column="${table.name}_${field.column}" property="${field.property}"/>
+	&lt;#if (field.column != 'is_active')>
+		&lt;result column="${table.name}_${field.column}" property="${field.property}"/>
+	&lt;/#if> 
 	&lt;/#list>
 	&lt;/resultMap>
 	&lt;sql id="${table.className}Column">
 	&lt;#assign x = false>
-	&lt;#list table.dbFields as field>&lt;#if (x == true)>,&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>${table.name}.${field.column} AS ${table.name}_${field.column}&lt;/#list>
+	&lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)>,&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>${table.name}.${field.column} AS ${table.name}_${field.column}&lt;/#if>&lt;/#list>
 	&lt;/sql>
 	&lt;sql id="${table.className}Where">
 		1=1
 		&lt;#list table.dbFields as field>
+		&lt;#if (field.column != 'is_active')>
 		&lt;if test="${field.property} != null and ${field.property}.toString()!=''">
 		&lt;![CDATA[ and ${table.name}.${field.column} = ${'#'}{${field.property}} &#93;&#93;>
 		&lt;/if>
+		&lt;/#if>
 		&lt;/#list>
 	&lt;/sql>
 	
@@ -32,7 +55,7 @@
 	&lt;/#if>
 		insert into ${table.name}(${table.name}.${table.dbFields[0].column}
 		&lt;#list table.dbFields as field>
-		&lt;#if (field_index==0)>
+		&lt;#if (field_index==0 || field.column == 'is_active')>
 		&lt;#continue>
 		&lt;/#if>
 		&lt;if test="${field.property} != null">
@@ -41,7 +64,7 @@
 		&lt;/#list>
 		)values(&lt;#if (table.dbFields[0].javaType.name == 'java.lang.String')>${'#'}{${table.dbFields[0].property}}&lt;#else>NULL&lt;/#if>
 		&lt;#list table.dbFields as field>
-		&lt;#if (field_index==0)>
+		&lt;#if (field_index==0 || field.column == 'is_active')>
 		&lt;#continue>
 		&lt;/#if>
 		&lt;if test="${field.property} != null">
@@ -55,11 +78,11 @@
 	&lt;insert id="bulkInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="${table.dbFields[0].property}">
 		insert into ${table.name} (
 		&lt;#assign x = false>
-		&lt;#list table.dbFields as field>&lt;#if (x == true)>,&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>${table.name}.${field.column}&lt;/#list>
+		&lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)>,&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>${table.name}.${field.column}&lt;/#if>&lt;/#list>
 		) values 
 		&lt;foreach collection="list" item="item" index="index" separator=",">
 		&lt;#assign x = false>
-		(&lt;#list table.dbFields as field>&lt;#if (x == true)>&lt;choose>&lt;when test="item.${field.property} == null">,DEFAULT&lt;/when>&lt;otherwise>,&lt;/#if>&lt;#if (field_index==0 &amp;&amp; field.javaType.name == 'java.lang.String')>UUID()&lt;#elseif (field_index==0 &amp;&amp; field.javaType.name == 'java.lang.Integer')>NULL&lt;#else>${'#'}{item.${field.property}}&lt;/#if>&lt;#if (x == true)>&lt;/otherwise>&lt;/choose>
+		(&lt;#list table.dbFields as field>&lt;#if (field.column != 'is_active')>&lt;#if (x == true)>&lt;choose>&lt;when test="item.${field.property} == null">,DEFAULT&lt;/when>&lt;otherwise>,&lt;/#if>&lt;#if (field_index==0 &amp;&amp; field.javaType.name == 'java.lang.String')>UUID()&lt;#elseif (field_index==0 &amp;&amp; field.javaType.name == 'java.lang.Integer')>NULL&lt;#else>${'#'}{item.${field.property}}&lt;/#if>&lt;/#if>&lt;#if (field.column != 'is_active' &amp;&amp; x == true)>&lt;/otherwise>&lt;/choose>
 		&lt;/#if>&lt;#if (x == false)>&lt;#assign x = true>&lt;/#if>&lt;/#list>)
 		&lt;/foreach>
 	&lt;/insert>
@@ -84,7 +107,7 @@
 		update ${table.name}
 		&lt;set>
 			&lt;#list table.dbFields as field>
-			&lt;#if (field_index==0)>
+			&lt;#if (field_index==0 || field.column == 'is_active')>
 			&lt;#continue>
 			&lt;/#if>
 			&lt;if test="${field.property} != null">
@@ -96,6 +119,29 @@
 		where ${table.name}.${table.dbFields[0].column} = ${'#'}{${table.dbFields[0].property}}
 	&lt;/update>
 	
+	&lt;!-- 根据id修改单条数据的is_active字段为false(逻辑删除) -->
+	&lt;update id="tombstone" parameterType="${table.dbFields[0].javaType.name}">
+		update ${table.name}
+		&lt;set>
+			${table.name}.is_active = FALSE
+		&lt;/set>
+		where ${table.name}.${table.dbFields[0].column} = ${'#'}{value}
+	&lt;/update>
+	
+	&lt;!-- 批量修改is_active字段为false(批量逻辑删除) -->
+	&lt;update id="bulkTombstone" parameterType="java.util.List">
+		update ${table.name}
+		&lt;set>
+			${table.name}.is_active = FALSE
+		&lt;/set>
+		where ${table.name}.${table.dbFields[0].column} in
+		(
+		&lt;foreach item="item" index="index" collection="list">
+			${'#'}{item},
+		&lt;/foreach>
+		NULL)
+	&lt;/update>
+	
 	&lt;!-- QBE查询 -->
 	&lt;select id="queryList" parameterType="${groupId}.entity.${table.nameElements[0]}.${table.className}"  resultMap="${table.className}Result">
 		select
@@ -103,6 +149,7 @@
 		from ${table.name}
 		&lt;where>
 		&lt;include refid="${table.className}Where" />
+		and ${table.name}.is_active = TRUE
 		&lt;/where>&lt;#list table.dbFields as field>&lt;#if (field.column == "create_time")>
 		order by ${table.name}.create_time DESC&lt;#break>&lt;/#if>&lt;/#list>
 	&lt;/select>
@@ -111,7 +158,7 @@
 	&lt;select id="find" parameterType="${table.dbFields[0].javaType.name}" resultMap="${table.className}Result">
 		select
 		&lt;include refid="${table.className}Column" />
-		from ${table.name} where ${table.name}.${table.dbFields[0].column} = ${'#'}{value}
+		from ${table.name} where ${table.name}.${table.dbFields[0].column} = ${'#'}{value} and ${table.name}.is_active = TRUE
 	&lt;/select>
 	
 	&lt;!-- 根据id列表查询列表 -->
@@ -124,30 +171,9 @@
 			${'#'}{item},
 		&lt;/foreach>
 		NULL)
-		&lt;#if (table.dbFields[0].javaType.name == 'java.lang.Integer')>
+		and ${table.name}.is_active = TRUE&lt;#if (table.dbFields[0].javaType.name == 'java.lang.Integer')>
 		order by ${table.name}.${table.dbFields[0].column} ASC&lt;#else>&lt;#list table.dbFields as field>&lt;#if (field.column == "create_time")>
-	&lt;/select>
-	
-	&lt;!-- 模糊搜索 -->
-	&lt;select id="fluzzSearch" resultMap="${table.className}Result">
-		select
-		&lt;include refid="${table.className}Column" />
-		from ${table.name}
-		&lt;where>
-		&lt;#assign x = false>
-		&lt;#list table.dbFields as field>
-		&lt;#if (field.javaType.name=="java.lang.String")>
-		&lt;#if (x == true)>
-		or
-		&lt;/#if>
-		&lt;#if (x == false)>
-		&lt;#assign x = true>
-		&lt;/#if>
-		${field.column} like concat('%', ${'#'}{keyWord},'%')
-		&lt;/#if>
-		&lt;/#list>
-		&lt;#assign x = false>
-		&lt;/where>
+		order by ${table.name}.create_time ASC&lt;#break>&lt;/#if>&lt;/#list>&lt;/#if>
 	&lt;/select>
 &lt;/mapper>
 	</source>
