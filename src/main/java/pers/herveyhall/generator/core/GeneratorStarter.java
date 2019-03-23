@@ -3,6 +3,7 @@ package pers.herveyhall.generator.core;
 import static pers.herveyhall.generator.tools.Utils.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -39,12 +40,12 @@ public class GeneratorStarter {
 	/**
 	 * 启动生成器
 	 * 
-	 * @param args
+	 * @param configStream 配置信息的輸入流
 	 */
-	public static void start() {
+	public static void start(InputStream configStream, String configObj) {
 		Properties properties = new Properties();
 		try {
-			properties.load(GeneratorStarter.class.getClassLoader().getResourceAsStream("config.properties"));
+			properties.load(configStream);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -53,7 +54,7 @@ public class GeneratorStarter {
 			if (Modifier.isStatic(field.getModifiers())) {
 				continue;
 			}
-			String propertyName = "configInfo." + field.getName();
+			String propertyName = new StringBuffer(configObj).append(".").append(field.getName()).toString();
 			String value = properties.getProperty(propertyName);
 			if (null == value) {
 				if (null != field.getAnnotation(NotNull.class)) {
@@ -64,7 +65,7 @@ public class GeneratorStarter {
 			try {
 				field.set(configInfo, value);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+				throw new RuntimeException("设置配置信息" + propertyName + "=" + value + "出现异常", e);
 			}
 		}
 		generate(getSchemas(configInfo), configInfo);
